@@ -38,10 +38,10 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String token = JWT.create()
                 .withSubject(authResult.getName())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 7200))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 72000000))
                 .sign(Algorithm.HMAC512("5e94SP%E./juTI1bpET&5B.[Ay}^$EOt:grmS/$}$Gg~:>X^UOi>M.N-\"_\"F;_;"));
 
-        response.addHeader("Authorization", "Bearer " + token);
+        response.setHeader("Authorization", "Bearer " + token);
     }
 
     @Override

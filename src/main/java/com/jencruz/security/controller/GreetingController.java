@@ -11,11 +11,11 @@ public class GreetingController {
 
     @GetMapping(value = "greet")
     public ResponseEntity<String> greet() {
-        return ResponseEntity.ok("Hello, World");
+        return ResponseEntity.ok().body("Hello, World");
     }
 
     @GetMapping
     public ResponseEntity<String> mainPage() {
-        return ResponseEntity.ok("main page");
+        return ResponseEntity.ok().body("Main Page");
     }
 }

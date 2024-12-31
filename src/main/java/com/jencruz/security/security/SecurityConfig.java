@@ -2,6 +2,7 @@ package com.jencruz.security.security;
 
 import com.jencruz.security.filter.AuthenticationFilter;
 import com.jencruz.security.filter.ExceptionHandlerFilter;
+import com.jencruz.security.filter.JWTAuthorizationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,31 +33,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> {
                     authorize
-                            .requestMatchers("/api/v1/user/**").permitAll()
+                            .requestMatchers("/api/v1/user/*").permitAll()
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
                 .addFilter(this.getAuthenticationFilter())
+                .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(sessionConfigure -> sessionConfigure.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-    }
-
-    @Bean
-    public UserDetailsService userDetails() {
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(bCryptPasswordEncoder.encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user = User.builder()
-                .username("user")
-                .password(bCryptPasswordEncoder.encode("user"))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
     }
 
     public AuthenticationFilter getAuthenticationFilter() {
